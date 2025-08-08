@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Factura Detallada</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f2f5f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .invoice-box {
+            background-color: #ffffff;
+            max-width: 900px;
+            margin: auto;
+            padding: 20px 30px;
+            border-radius: 15px;
+        }
+
+        h1, h2 {
+            color: #2c3e50;
+        }
+
+        .header, .footer {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .company-logo {
+            width: 120px;
+            margin-bottom: 10px;
+        }
+
+        .info-block {
+            margin-bottom: 20px;
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .info-table td {
+            padding: 6px;
+            vertical-align: top;
+        }
+
+        .section-title {
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #34495e;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        thead {
+            background-color: #3498db;
+            color: white;
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #f0f8ff;
+        }
+
+        .total-line {
+            font-weight: bold;
+            text-align: right;
+        }
+
+        .notes {
+            margin-top: 30px;
+            font-style: italic;
+            color: #7f8c8d;
+            font-size: 11px;
+        }
+
+        .footer p {
+            margin: 0;
+            color: #95a5a6;
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="invoice-box">
+    <div class="header">
+        <h1>Factura Electrónica</h1>
+        <p>Empresa XYZ S.A.S. - NIT: 900123456-7</p>
+        <p>www.empresaxyz.com | contacto@empresaxyz.com</p>
+    </div>
+
+    <div class="info-block">
+        <table class="info-table">
+            <tr>
+                <td>
+                    <div class="section-title">Datos del Cliente</div>
+                    <p><strong>Nombre:</strong> <span th:text="${cliente.nombres + ' ' + cliente.apellidos}"></span></p>
+                    <p><strong>Email:</strong> <span th:text="${cliente.correo}"></span></p>
+                    <p><strong>Teléfono:</strong> <span th:text="${cliente.telefono}"></span></p>
+                    <p><strong>Dirección:</strong> <span th:text="${cliente.direccion}"></span></p>
+                </td>
+                <td>
+                    <div class="section-title">Datos de la Factura</div>
+                    <p><strong>Factura No:</strong> <span th:text="${factura.id}"></span></p>
+                    <p><strong>Fecha:</strong> <span th:text="${factura.fechaEmision != null ? T(java.time.format.DateTimeFormatter).ofPattern('dd/MM/yyyy').format(factura.fechaEmision) : 'No disponible'}"></span></p>
+                    <p><strong>Estado:</strong> <span th:text="${factura.estado}"></span></p>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Descripción</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Subtotal</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="detalle, iterStat : ${factura.detalleFacturas}">
+            <td th:text="${detalle.producto.nombre}"></td>
+            <td th:text="${detalle.producto.descipcion}"></td>
+            <td th:text="${detalle.cantidad}"></td>
+            <td th:text="${#numbers.formatDecimal(detalle.precioUnitario, 1, 'COMMA', 2, 'POINT')}"></td>
+            <td th:text="${#numbers.formatDecimal(detalle.subTotal, 1, 'COMMA', 2, 'POINT')}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <br />
+    <table>
+        <tr>
+            <td colspan="4" class="total-line">Subtotal</td>
+            <td th:text="${factura.subTotal != null ? #numbers.formatDecimal(factura.subTotal, 1, 'COMMA', 2, 'POINT') : 'N/A'}"></td>
+        </tr>
+        <tr>
+            <td colspan="4" class="total-line">Impuestos</td>
+            <td th:text="${factura.impuestos != null ? #numbers.formatDecimal(factura.impuestos, 1, 'COMMA', 2, 'POINT') : 'N/A'}"></td>
+        </tr>
+        <tr>
+            <td colspan="4" class="total-line">Total a pagar</td>
+            <td th:text="${factura.total != null ? #numbers.formatDecimal(factura.total, 1, 'COMMA', 2, 'POINT') : 'N/A'}"></td>
+        </tr>
+        <tr>
+            <td colspan="4" class="total-line">Total Pagado</td>
+            <td th:text="${factura.totalPagado != null ? #numbers.formatDecimal(factura.totalPagado, 1, 'COMMA', 2, 'POINT') : 'N/A'}"></td>
+        </tr>
+    </table>
+
+    <div class="notes">
+        <p>Nota: Esta factura es válida como documento equivalente según la legislación vigente.</p>
+        <p>Para soporte o consultas, comuníquese con servicio al cliente.</p>
+    </div>
+
+    <div class="footer">
+        <p>Factura generada electrónicamente - No requiere firma</p>
+    </div>
+</div>
+</body>
+</html>

@@ -1,15 +1,21 @@
 package com.example.prueba.domain.repository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-
 import com.example.prueba.domain.entity.Usuario;
 
-@Repository
-public interface UsuarioRepository extends JpaRepository<Usuario, UUID>{
+public interface UsuarioRepository {
+	Optional<Usuario> save(Usuario cliente) throws Exception;
 
-	Optional<Usuario> findByTipoIdentificacionAndIdentificacion(String Tipoidentificacion, String identificacion);
+	List<Usuario> findAll() throws Exception;
+
+	Optional<Usuario> findByIdentificacion(String tipoIdentificacion, String identificacion) throws Exception;
+
+	Optional<Usuario> update(Usuario cliente) throws Exception;
+
+	void delete(UUID id) throws Exception;
+
+	Optional<Usuario> findById(UUID id) throws Exception;
 }

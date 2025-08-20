@@ -9,10 +9,10 @@ import com.example.prueba.domain.entity.Usuario;
 
 @Mapper(componentModel = "spring")
 public interface UsuarioMapper {
-	
+
 	UsuarioDTO toUsuarioDTO(Usuario cliente);
 
 	Usuario toUsuario(UsuarioDTO cliente);
-	
+
 	List<UsuarioDTO> toListUsuarioDTO(List<Usuario> cliente);
 }

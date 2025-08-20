@@ -8,6 +8,7 @@ import com.example.prueba.domain.entity.DetalleFactura;
 import com.example.prueba.domain.entity.Factura;
 import com.example.prueba.domain.entity.Producto;
 import com.example.prueba.domain.entity.Usuario;
+import com.example.prueba.shared.enums.TipoIdentificacion;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.processing.Generated;
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-08-08T14:43:58-0500",
+    date = "2025-08-20T09:17:12-0500",
     comments = "version: 1.5.5.Final, compiler: Eclipse JDT (IDE) 3.42.50.v20250729-0351, environment: Java 21.0.8 (Eclipse Adoptium)"
 )
 @Component
@@ -39,7 +40,9 @@ public class UsuarioMapperImpl implements UsuarioMapper {
         usuarioDTO.setIdentificacion( cliente.getIdentificacion() );
         usuarioDTO.setNombres( cliente.getNombres() );
         usuarioDTO.setTelefono( cliente.getTelefono() );
-        usuarioDTO.setTipoIdentificacion( cliente.getTipoIdentificacion() );
+        if ( cliente.getTipoIdentificacion() != null ) {
+            usuarioDTO.setTipoIdentificacion( Enum.valueOf( TipoIdentificacion.class, cliente.getTipoIdentificacion() ) );
+        }
 
         return usuarioDTO;
     }
@@ -62,7 +65,9 @@ public class UsuarioMapperImpl implements UsuarioMapper {
         usuario.setIdentificacion( cliente.getIdentificacion() );
         usuario.setNombres( cliente.getNombres() );
         usuario.setTelefono( cliente.getTelefono() );
-        usuario.setTipoIdentificacion( cliente.getTipoIdentificacion() );
+        if ( cliente.getTipoIdentificacion() != null ) {
+            usuario.setTipoIdentificacion( cliente.getTipoIdentificacion().name() );
+        }
 
         return usuario;
     }

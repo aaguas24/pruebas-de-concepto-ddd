@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import com.example.prueba.domain.exceptions.SinRegistrosException;
-import com.example.prueba.domain.exceptions.ValidacionException;
+import com.example.prueba.shared.exceptions.SinRegistrosException;
+import com.example.prueba.shared.exceptions.ValidacionException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

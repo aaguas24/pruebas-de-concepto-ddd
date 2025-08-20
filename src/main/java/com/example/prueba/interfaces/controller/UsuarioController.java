@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.prueba.application.dto.UsuarioDTO;
-import com.example.prueba.application.service.UsuarioService;
+import com.example.prueba.application.service.usuario.UsuarioApplicationService;
 
 import jakarta.validation.Valid;
 
@@ -22,9 +22,9 @@ import jakarta.validation.Valid;
 @RequestMapping("usuario")
 public class UsuarioController {
 
-	private final UsuarioService usuarioService;
-	
-	public UsuarioController(UsuarioService usuarioService) {
+	private final UsuarioApplicationService usuarioService;
+
+	public UsuarioController(UsuarioApplicationService usuarioService) {
 		this.usuarioService = usuarioService;
 	}
 
@@ -32,23 +32,24 @@ public class UsuarioController {
 	public ResponseEntity<UsuarioDTO> save(@Valid @RequestBody UsuarioDTO cliente) throws Exception {
 		return new ResponseEntity<>(usuarioService.save(cliente), HttpStatus.CREATED);
 	}
-	
+
 	@GetMapping("/findAll")
-	public ResponseEntity<List<UsuarioDTO> > findAll() throws Exception {
+	public ResponseEntity<List<UsuarioDTO>> findAll() throws Exception {
 		return new ResponseEntity<>(usuarioService.findAll(), HttpStatus.OK);
 	}
-	
+
 	@GetMapping("/find/{tipoIdentificacion}/{identificacion}")
 	public ResponseEntity<UsuarioDTO> findByIdentificacion(@PathVariable String tipoIdentificacion,
 			@PathVariable String identificacion) throws Exception {
-		return new ResponseEntity<>(usuarioService.findByIdentificacion(tipoIdentificacion, identificacion), HttpStatus.OK);
+		return new ResponseEntity<>(usuarioService.findByIdentificacion(tipoIdentificacion, identificacion),
+				HttpStatus.OK);
 	}
-	
+
 	@PutMapping
 	public ResponseEntity<UsuarioDTO> update(@RequestBody UsuarioDTO cliente) throws Exception {
 		return new ResponseEntity<>(usuarioService.update(cliente), HttpStatus.OK);
 	}
-	
+
 	@DeleteMapping
 	public ResponseEntity<Void> delete(@RequestBody UsuarioDTO cliente) throws Exception {
 		usuarioService.delete(cliente.getId());

@@ -9,17 +9,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.prueba.application.dto.ProductoDTO;
-import com.example.prueba.application.service.ProductoService;
+import com.example.prueba.application.service.producto.ProductoApplicationService;
 
 @RestController
 @RequestMapping("productos")
 public class ProductoController {
-	
+
 	@Autowired
-	ProductoService productoService;
+	ProductoApplicationService productoService;
 
 	@PostMapping
-	public ResponseEntity<ProductoDTO> save(@RequestBody ProductoDTO producto) throws Exception{
-		return new ResponseEntity<ProductoDTO>(productoService.save(producto), HttpStatus.CREATED);
+	public ResponseEntity<ProductoDTO> save(@RequestBody ProductoDTO producto) throws Exception {
+		return new ResponseEntity<ProductoDTO>(productoService.save(producto).get(), HttpStatus.CREATED);
 	}
 }

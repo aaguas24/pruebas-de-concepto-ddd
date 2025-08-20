@@ -13,46 +13,48 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.prueba.application.dto.UsuarioDTO;
-import com.example.prueba.application.service.usuario.UsuarioApplicationService;
+import com.example.prueba.domain.entity.Usuario;
+import com.example.prueba.application.service.usuario.UsuarioApplicationServiceDefault;
 
-import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("usuario")
 public class UsuarioController {
 
-	private final UsuarioApplicationService usuarioService;
+	private final UsuarioApplicationServiceDefault usuarioService;
 
-	public UsuarioController(UsuarioApplicationService usuarioService) {
+	public UsuarioController(UsuarioApplicationServiceDefault usuarioService) {
 		this.usuarioService = usuarioService;
 	}
 
 	@PostMapping
-	public ResponseEntity<UsuarioDTO> save(@Valid @RequestBody UsuarioDTO cliente) throws Exception {
-		return new ResponseEntity<>(usuarioService.save(cliente), HttpStatus.CREATED);
+	public ResponseEntity<Usuario> save(@RequestBody Usuario usuario) {
+		Usuario saved = usuarioService.save(usuario);
+		return new ResponseEntity<>(saved, HttpStatus.CREATED);
 	}
 
 	@GetMapping("/findAll")
-	public ResponseEntity<List<UsuarioDTO>> findAll() throws Exception {
+	public ResponseEntity<List<Usuario>> findAll() {
 		return new ResponseEntity<>(usuarioService.findAll(), HttpStatus.OK);
 	}
 
 	@GetMapping("/find/{tipoIdentificacion}/{identificacion}")
-	public ResponseEntity<UsuarioDTO> findByIdentificacion(@PathVariable String tipoIdentificacion,
-			@PathVariable String identificacion) throws Exception {
-		return new ResponseEntity<>(usuarioService.findByIdentificacion(tipoIdentificacion, identificacion),
-				HttpStatus.OK);
+	public ResponseEntity<Usuario> findByIdentificacion(@PathVariable String tipoIdentificacion,
+													   @PathVariable String identificacion) {
+		return usuarioService.findByIdentificacion(tipoIdentificacion, identificacion)
+				.map(usuario -> new ResponseEntity<>(usuario, HttpStatus.OK))
+				.orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
 	}
 
 	@PutMapping
-	public ResponseEntity<UsuarioDTO> update(@RequestBody UsuarioDTO cliente) throws Exception {
-		return new ResponseEntity<>(usuarioService.update(cliente), HttpStatus.OK);
+	public ResponseEntity<Usuario> update(@RequestBody Usuario usuario) {
+		Usuario updated = usuarioService.update(usuario);
+		return new ResponseEntity<>(updated, HttpStatus.OK);
 	}
 
 	@DeleteMapping
-	public ResponseEntity<Void> delete(@RequestBody UsuarioDTO cliente) throws Exception {
-		usuarioService.delete(cliente.getId());
+	public ResponseEntity<Void> delete(@RequestBody Usuario usuario) {
+		usuarioService.delete(usuario.getId());
 		return ResponseEntity.status(HttpStatus.OK).build();
 	}
 }

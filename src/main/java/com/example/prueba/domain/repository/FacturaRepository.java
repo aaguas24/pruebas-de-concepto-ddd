@@ -1,11 +1,13 @@
 package com.example.prueba.domain.repository;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.example.prueba.domain.entity.Factura;
 
 public interface FacturaRepository {
-    Factura save(Factura factura) throws Exception;
-
-    Factura findById(UUID factura) throws Exception;
+    Factura guardar(Factura factura);
+    Optional<Factura> buscarPorId(UUID id);
+    List<Factura> buscarPorUsuario(UUID usuarioId);
 }

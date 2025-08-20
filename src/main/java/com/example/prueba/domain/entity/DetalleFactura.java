@@ -1,7 +1,7 @@
 package com.example.prueba.domain.entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
+import com.example.prueba.domain.valueobject.Dinero;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -13,17 +13,31 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Setter
-@Getter
 @Entity
 public class DetalleFactura implements Serializable{
+	public DetalleFactura() {}
+	public DetalleFactura(UUID id, Factura factura, Producto producto, Integer cantidad, Dinero precioUnitario, Dinero subTotal) {
+		this.id = id;
+		this.factura = factura;
+		this.producto = producto;
+		this.cantidad = cantidad;
+		this.precioUnitario = precioUnitario;
+		this.subTotal = subTotal;
+	}
+
+	public UUID getId() { return id; }
+	public void setId(UUID id) { this.id = id; }
+	public Factura getFactura() { return factura; }
+	public void setFactura(Factura factura) { this.factura = factura; }
+	public Producto getProducto() { return producto; }
+	public void setProducto(Producto producto) { this.producto = producto; }
+	public Integer getCantidad() { return cantidad; }
+	public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
+	public Dinero getPrecioUnitario() { return precioUnitario; }
+	public void setPrecioUnitario(Dinero precioUnitario) { this.precioUnitario = precioUnitario; }
+	public Dinero getSubTotal() { return subTotal; }
+	public void setSubTotal(Dinero subTotal) { this.subTotal = subTotal; }
 
 	private static final long serialVersionUID = 1L;
 
@@ -46,8 +60,8 @@ public class DetalleFactura implements Serializable{
 	private Integer cantidad;
 	
 	@Column(name = "precio_unitario")
-	private BigDecimal precioUnitario;
-	
+	private Dinero precioUnitario;
+
 	@Column(name = "sub_Total")
-	private BigDecimal subTotal;
+	private Dinero subTotal;
 }

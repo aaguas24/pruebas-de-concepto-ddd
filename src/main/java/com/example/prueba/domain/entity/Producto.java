@@ -1,6 +1,6 @@
 package com.example.prueba.domain.entity;
 
-import java.math.BigDecimal;
+import com.example.prueba.domain.valueobject.Dinero;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -9,17 +9,64 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @Entity
 public class Producto {
+	public Producto() {}
+	public Producto(UUID id, String nombre, String descipcion, Dinero precioUnitario, LocalDateTime fechaIngreso, LocalDateTime fechaVencimiento, String idProveedor, String categoria, String unidadMedida, String codigoProducto, Dinero impuesto, Dinero descuento, Boolean esExento, String marca, String modelo, String lote, String origen) {
+		this.id = id;
+		this.nombre = nombre;
+		this.descipcion = descipcion;
+		this.precioUnitario = precioUnitario;
+		this.fechaIngreso = fechaIngreso;
+		this.fechaVencimiento = fechaVencimiento;
+		this.idProveedor = idProveedor;
+		this.categoria = categoria;
+		this.unidadMedida = unidadMedida;
+		this.codigoProducto = codigoProducto;
+		this.impuesto = impuesto;
+		this.descuento = descuento;
+		this.esExento = esExento;
+		this.marca = marca;
+		this.modelo = modelo;
+		this.lote = lote;
+		this.origen = origen;
+	}
+
+	public UUID getId() { return id; }
+	public void setId(UUID id) { this.id = id; }
+	public String getNombre() { return nombre; }
+	public void setNombre(String nombre) { this.nombre = nombre; }
+	public String getDescipcion() { return descipcion; }
+	public void setDescipcion(String descipcion) { this.descipcion = descipcion; }
+	public Dinero getPrecioUnitario() { return precioUnitario; }
+	public void setPrecioUnitario(Dinero precioUnitario) { this.precioUnitario = precioUnitario; }
+	public LocalDateTime getFechaIngreso() { return fechaIngreso; }
+	public void setFechaIngreso(LocalDateTime fechaIngreso) { this.fechaIngreso = fechaIngreso; }
+	public LocalDateTime getFechaVencimiento() { return fechaVencimiento; }
+	public void setFechaVencimiento(LocalDateTime fechaVencimiento) { this.fechaVencimiento = fechaVencimiento; }
+	public String getIdProveedor() { return idProveedor; }
+	public void setIdProveedor(String idProveedor) { this.idProveedor = idProveedor; }
+	public String getCategoria() { return categoria; }
+	public void setCategoria(String categoria) { this.categoria = categoria; }
+	public String getUnidadMedida() { return unidadMedida; }
+	public void setUnidadMedida(String unidadMedida) { this.unidadMedida = unidadMedida; }
+	public String getCodigoProducto() { return codigoProducto; }
+	public void setCodigoProducto(String codigoProducto) { this.codigoProducto = codigoProducto; }
+	public Dinero getImpuesto() { return impuesto; }
+	public void setImpuesto(Dinero impuesto) { this.impuesto = impuesto; }
+	public Dinero getDescuento() { return descuento; }
+	public void setDescuento(Dinero descuento) { this.descuento = descuento; }
+	public Boolean getEsExento() { return esExento; }
+	public void setEsExento(Boolean esExento) { this.esExento = esExento; }
+	public String getMarca() { return marca; }
+	public void setMarca(String marca) { this.marca = marca; }
+	public String getModelo() { return modelo; }
+	public void setModelo(String modelo) { this.modelo = modelo; }
+	public String getLote() { return lote; }
+	public void setLote(String lote) { this.lote = lote; }
+	public String getOrigen() { return origen; }
+	public void setOrigen(String origen) { this.origen = origen; }
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
@@ -32,7 +79,7 @@ public class Producto {
 	private String descipcion;
 	
 	@Column
-	private BigDecimal precioUnitario;
+	private Dinero precioUnitario;
 
 	@Column(name = "fecha_Ingreso")
 	private LocalDateTime fechaIngreso;
@@ -52,11 +99,11 @@ public class Producto {
 	@Column(name = "codigo_producto", unique = true, nullable = false, length = 50)
 	private String codigoProducto;
 
-	@Column(name = "impuesto", precision = 10, scale = 2)
-	private BigDecimal impuesto;
+	@Column(name = "impuesto")
+	private Dinero impuesto;
 
-	@Column(name = "descuento", precision = 10, scale = 2)
-	private BigDecimal descuento;
+	@Column(name = "descuento")
+	private Dinero descuento;
 
 	@Column(name = "es_exento")
 	private Boolean esExento;

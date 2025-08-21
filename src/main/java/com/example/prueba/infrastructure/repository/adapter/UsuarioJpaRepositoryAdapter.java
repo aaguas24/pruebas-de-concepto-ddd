@@ -20,59 +20,34 @@ public class UsuarioJpaRepositoryAdapter implements UsuarioRepository {
 	}
 
 	@Override
-	public Optional<Usuario> save(Usuario cliente) throws Exception {
-		try {
-			return Optional.ofNullable(usuarioJpaRepository.save(cliente));
-		} catch (Exception e) {
-			throw new Exception(e.getMessage());
-		}
+	public Usuario guardar(Usuario usuario) {
+		return usuarioJpaRepository.save(usuario);
+	}
+
+	@Override
+	public List<Usuario> buscarTodos() {
+		return usuarioJpaRepository.findAll();
+	}
+
+	@Override
+	public Optional<Usuario> buscarPorIdentificacion(String tipoIdentificacion, String identificacion) {
+		return usuarioJpaRepository.findByTipoIdentificacionAndIdentificacion(tipoIdentificacion, identificacion);
+	}
+
+	@Override
+	public Usuario actualizar(Usuario usuario) {
+		return usuarioJpaRepository.save(usuario);
+	}
+
+	@Override
+	public void eliminar(UUID id) {
+		usuarioJpaRepository.deleteById(id);
 
 	}
 
 	@Override
-	public List<Usuario> findAll() throws Exception {
-		try {
-			return usuarioJpaRepository.findAll();
-		} catch (Exception e) {
-			throw new Exception(e.getMessage());
-		}
-	}
-
-	@Override
-	public Optional<Usuario> findByIdentificacion(String tipoIdentificacion, String identificacion) throws Exception {
-		try {
-			return usuarioJpaRepository.findByTipoIdentificacionAndIdentificacion(tipoIdentificacion, identificacion);
-		} catch (Exception e) {
-			throw new Exception(e.getMessage());
-		}
-	}
-
-	@Override
-	public Optional<Usuario> update(Usuario cliente) throws Exception {
-		try {
-			return Optional.ofNullable(usuarioJpaRepository.save(cliente));
-		} catch (Exception e) {
-			throw new Exception(e.getMessage());
-		}
-	}
-
-	@Override
-	public void delete(UUID id) throws Exception {
-		try {
-			usuarioJpaRepository.deleteById(id);
-			;
-		} catch (Exception e) {
-			throw new Exception(e.getMessage());
-		}
-	}
-
-	@Override
-	public Optional<Usuario> findById(UUID id) throws Exception {
-		try {
-			return usuarioJpaRepository.findById(id);
-		} catch (Exception e) {
-			throw new Exception(e.getMessage());
-		}
+	public Optional<Usuario> buscarPorId(UUID id) {
+		return usuarioJpaRepository.findById(id);
 	}
 
 }

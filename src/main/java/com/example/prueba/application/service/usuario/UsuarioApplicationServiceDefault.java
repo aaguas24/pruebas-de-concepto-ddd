@@ -15,7 +15,11 @@ import com.example.prueba.domain.entity.Usuario;
 import com.example.prueba.domain.repository.UsuarioRepository;
 import com.example.prueba.shared.exceptions.SinRegistrosException;
 import com.example.prueba.shared.exceptions.ValidacionException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+@Service
+@Transactional
 public class UsuarioApplicationServiceDefault implements UsuarioApplicationService {
 
     private final UsuarioMapper usuarioMapper;
@@ -32,101 +36,70 @@ public class UsuarioApplicationServiceDefault implements UsuarioApplicationServi
     }
 
     @Override
-    public UsuarioDTO save(UsuarioDTO clienteDTO) throws Exception {
-        try {
-            Optional<Usuario> getUsuario = usuarioRepository.findByIdentificacion(
-                    clienteDTO.getTipoIdentificacion().getCodigo(), clienteDTO.getIdentificacion());
-            UsuarioValidador.validarUsuario(getUsuario);
+    public UsuarioDTO save(UsuarioDTO usuarioDTO) {
+        Optional<Usuario> getUsuario = usuarioRepository.findByIdentificacion(
+                usuarioDTO.getTipoIdentificacion().getCodigo(), usuarioDTO.getIdentificacion());
+        UsuarioValidador.validarUsuario(getUsuario);
 
-            Usuario cliente = usuarioMapper.toUsuario(clienteDTO);
+        Usuario usuario = usuarioMapper.toEntity(usuarioDTO);
+        usuario.prePersist();
 
-            return usuarioMapper.toUsuarioDTO(usuarioRepository.save(cliente).get());
-        } catch (ValidacionException e) {
-            throw new ValidacionException(e.getMessage());
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-
+        return usuarioMapper.toDto(usuarioRepository.save(usuario)
+                .orElseThrow(() -> new ValidacionException("Error al guardar usuario.")));
     }
 
     @Override
-    public List<UsuarioDTO> findAll() throws Exception {
-        try {
-            List<Usuario> clientesEntity = usuarioRepository.findAll();
-            UsuarioValidador.validarUsuarios(clientesEntity);
-            return usuarioMapper.toListUsuarioDTO(clientesEntity);
-        } catch (SinRegistrosException e) {
-            throw new SinRegistrosException(e.getMessage());
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
+    @Transactional(readOnly = true)
+    public List<UsuarioDTO> findAll() {
+        List<Usuario> usuariosEntity = usuarioRepository.findAll();
+        UsuarioValidador.validarUsuarios(usuariosEntity);
+        return usuarioMapper.toDto(usuariosEntity);
     }
 
     @Override
-    public UsuarioDTO findByIdentificacion(String tipoIdentificacion, String identificacion) throws Exception {
-        try {
-            Optional<Usuario> getUsuario = usuarioRepository.findByIdentificacion(
-                    tipoIdentificacion, identificacion);
-            UsuarioValidador.validarUsuario(getUsuario);
-            return usuarioMapper.toUsuarioDTO(getUsuario.get());
-        } catch (ValidacionException e) {
-            throw new ValidacionException(e.getMessage());
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-
+    @Transactional(readOnly = true)
+    public UsuarioDTO findByIdentificacion(String tipoIdentificacion, String identificacion) {
+        Optional<Usuario> getUsuario = usuarioRepository.findByIdentificacion(
+                tipoIdentificacion, identificacion);
+        UsuarioValidador.validarUsuario(getUsuario);
+        return usuarioMapper.toDto(getUsuario.orElseThrow(() -> new ValidacionException("Usuario no encontrado.")));
     }
 
     @Override
-    public UsuarioDTO update(UsuarioDTO clienteDTO) throws Exception {
-        try {
-            Optional<Usuario> getUsuario = usuarioRepository.findByIdentificacion(
-                    clienteDTO.getTipoIdentificacion().getCodigo(), clienteDTO.getIdentificacion());
-            UsuarioValidador.validarUsuario(getUsuario);
+    public UsuarioDTO update(UsuarioDTO usuarioDTO) {
+        Optional<Usuario> getUsuario = usuarioRepository.findByIdentificacion(
+                usuarioDTO.getTipoIdentificacion().getCodigo(), usuarioDTO.getIdentificacion());
+        UsuarioValidador.validarUsuario(getUsuario);
 
-            getUsuario.get().setDireccion(clienteDTO.getDireccion());
-            getUsuario.get().setTelefono(clienteDTO.getTelefono());
-            getUsuario.get().setCorreo(clienteDTO.getCorreo());
-            if (Objects.nonNull(clienteDTO.getFacturas()) && !clienteDTO.getFacturas().isEmpty()) {
-                for (FacturaDTO factura : clienteDTO.getFacturas()) {
+        Usuario usuario = getUsuario.get();
+        usuario.actualizar(
+                usuarioDTO.getDireccion(),
+                usuarioDTO.getTelefono(),
+                usuarioDTO.getCorreo());
 
-                    Factura facturaMap = facturaMapper.toFactura(factura);
-                    getUsuario.get().setFactura(facturaMap);
-
-                }
+        if (Objects.nonNull(usuarioDTO.getFacturas()) && !usuarioDTO.getFacturas().isEmpty()) {
+            for (FacturaDTO factura : usuarioDTO.getFacturas()) {
+                Factura facturaMap = facturaMapper.toEntity(factura);
+                usuario.setFactura(facturaMap);
             }
-
-            return usuarioMapper.toUsuarioDTO(usuarioRepository.save(getUsuario.get()).get());
-        } catch (ValidacionException e) {
-            throw new ValidacionException(e.getMessage());
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
         }
 
+        return usuarioMapper.toDto(usuarioRepository.save(usuario)
+                .orElseThrow(() -> new ValidacionException("Error al actualizar usuario.")));
     }
 
     @Override
-    public void delete(UUID id) throws Exception {
-        try {
-            Optional<Usuario> getUsuario = usuarioRepository.findById(id);
-            UsuarioValidador.validarUsuarioPorID(getUsuario, id);
-            usuarioRepository.delete(id);
-
-        } catch (ValidacionException e) {
-            throw new ValidacionException(e.getMessage());
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-
+    public void delete(UUID id) {
+        Optional<Usuario> getUsuario = usuarioRepository.findById(id);
+        UsuarioValidador.validarUsuarioPorID(getUsuario, id);
+        usuarioRepository.delete(id);
     }
 
     @Override
-    public UsuarioDTO findById(UUID id) throws Exception {
-        try {
-            Optional<Usuario> usuarioById = usuarioRepository.findById(id);
-            return usuarioMapper.toUsuarioDTO(usuarioById.get());
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
+    @Transactional(readOnly = true)
+    public UsuarioDTO findById(UUID id) {
+        Optional<Usuario> usuarioById = usuarioRepository.findById(id);
+        return usuarioMapper
+                .toDto(usuarioById.orElseThrow(() -> new ValidacionException("Usuario no encontrado con ID: " + id)));
     }
 }

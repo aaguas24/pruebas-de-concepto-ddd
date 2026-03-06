@@ -6,15 +6,15 @@ import java.util.UUID;
 import com.example.prueba.application.dto.UsuarioDTO;
 
 public interface UsuarioApplicationService {
-    UsuarioDTO save(UsuarioDTO cliente) throws Exception;
+    UsuarioDTO save(UsuarioDTO usuario);
 
-    List<UsuarioDTO> findAll() throws Exception;
+    List<UsuarioDTO> findAll();
 
-    UsuarioDTO findByIdentificacion(String tipoIdentificacion, String identificacion) throws Exception;
+    UsuarioDTO findByIdentificacion(String tipoIdentificacion, String identificacion);
 
-    UsuarioDTO update(UsuarioDTO cliente) throws Exception;
+    UsuarioDTO update(UsuarioDTO usuario);
 
-    void delete(UUID id) throws Exception;
+    void delete(UUID id);
 
-    UsuarioDTO findById(UUID id) throws Exception;
+    UsuarioDTO findById(UUID id);
 }

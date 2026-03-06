@@ -1,17 +1,15 @@
 package com.example.prueba.application.mapper;
 
-import java.util.List;
-
-import org.mapstruct.Mapper;
-
 import com.example.prueba.application.dto.ProductoDTO;
 import com.example.prueba.domain.entity.Producto;
+import org.mapstruct.*;
 
-@Mapper(componentModel = "spring")
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface ProductoMapper {
-	ProductoDTO toProductoDTO(Producto cliente);
-	
-	Producto toProducto(ProductoDTO cliente);
-	
-	List<ProductoDTO> toProductoDTO(List<Producto> cliente);
+    Producto toEntity(ProductoDTO productoDTO);
+
+    ProductoDTO toDto(Producto producto);
+
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Producto partialUpdate(ProductoDTO productoDTO, @MappingTarget Producto producto);
 }

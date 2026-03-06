@@ -6,70 +6,87 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.PrePersist;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
-@Entity
 public class Factura {
-	
-	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
+
 	private UUID id;
-
-	@ManyToOne
-	@JoinColumn(name = "usuario_id")
-	@JsonBackReference
 	private Usuario usuario;
-
-	@Column(name = "fecha_emision")
 	private LocalDateTime fechaEmision;
-
-	@Column
 	private BigDecimal total;
-
-	@Column
 	private String estado;
-
-	@OneToMany(mappedBy = "factura", cascade = CascadeType.ALL, orphanRemoval = true)
-	@JsonManagedReference
 	private List<DetalleFactura> detalleFacturas = new ArrayList<>();
-
-	@Column(name = "sub_total")
 	private BigDecimal subTotal;
-	
-	@Column
 	private BigDecimal impuestos;
-	
-	@Column(name = "total-pagado")
 	private BigDecimal totalPagado;
-	
-	@PrePersist
-	private void prePersist() {
-		fechaEmision = LocalDateTime.now();
+
+	/**
+	 * Lógica de negocio: inicializar fecha de emisión
+	 */
+	public void prePersist() {
+		if (fechaEmision == null) {
+			fechaEmision = LocalDateTime.now();
+		}
+		if (id == null) {
+			id = UUID.randomUUID();
+		}
+		if (estado == null) {
+			estado = "PENDIENTE";
+		}
+		calcularTotales();
 	}
-	
-	public void detalleFactura(DetalleFactura detalleFactura) {
+
+	/**
+	 * Lógica de negocio: agregar detalle de factura
+	 */
+	public void agregarDetalle(DetalleFactura detalleFactura) {
 		detalleFactura.setFactura(this);
 		detalleFacturas.add(detalleFactura);
+		calcularTotales();
 	}
+
+	/**
+	 * Lógica de negocio: eliminar detalle de factura
+	 */
+	public void removerDetalle(DetalleFactura detalleFactura) {
+		detalleFactura.setFactura(null);
+		detalleFacturas.remove(detalleFactura);
+		calcularTotales();
+	}
+
+	/**
+	 * Lógica de negocio: calcular totales de la factura
+	 */
+	public void calcularTotales() {
+		subTotal = detalleFacturas.stream()
+				.map(DetalleFactura::getSubTotal)
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+
+		if (impuestos == null) {
+			impuestos = subTotal.multiply(new BigDecimal("0.19")); // IVA 19%
+		}
+
+		total = subTotal.add(impuestos);
+	}
+
+	/**
+	 * Lógica de negocio: marcar factura como pagada
+	 */
+	public void marcarPagada(BigDecimal monto) {
+		if (monto.compareTo(total) >= 0) {
+			this.estado = "PAGADA";
+			this.totalPagado = total;
+		} else {
+			this.estado = "PARCIALMENTE_PAGADA";
+			this.totalPagado = monto;
+		}
+	}
+
 }

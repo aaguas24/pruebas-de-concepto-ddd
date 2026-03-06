@@ -17,8 +17,8 @@ public final class UsuarioValidador {
 		}
 	}
 
-	public static final void validarUsuarios(List<Usuario> clientesEntity) throws ValidacionException {
-		if (Objects.isNull(clientesEntity) || clientesEntity.isEmpty()) {
+	public static final void validarUsuarios(List<Usuario> usuariosEntity) throws ValidacionException {
+		if (Objects.isNull(usuariosEntity) || usuariosEntity.isEmpty()) {
 			throw new SinRegistrosException("No hay usuarios registrados.");
 		}
 	}

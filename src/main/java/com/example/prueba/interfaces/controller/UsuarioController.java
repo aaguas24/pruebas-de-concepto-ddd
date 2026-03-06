@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,8 +28,8 @@ public class UsuarioController {
 	}
 
 	@PostMapping
-	public ResponseEntity<UsuarioDTO> save(@Valid @RequestBody UsuarioDTO cliente) throws Exception {
-		return new ResponseEntity<>(usuarioService.save(cliente), HttpStatus.CREATED);
+	public ResponseEntity<UsuarioDTO> save(@Valid @RequestBody UsuarioDTO usuario) throws Exception {
+		return new ResponseEntity<>(usuarioService.save(usuario), HttpStatus.CREATED);
 	}
 
 	@GetMapping("/findAll")
@@ -46,13 +45,16 @@ public class UsuarioController {
 	}
 
 	@PutMapping
-	public ResponseEntity<UsuarioDTO> update(@RequestBody UsuarioDTO cliente) throws Exception {
-		return new ResponseEntity<>(usuarioService.update(cliente), HttpStatus.OK);
+	public ResponseEntity<UsuarioDTO> update(@RequestBody UsuarioDTO usuario) throws Exception {
+		return new ResponseEntity<>(usuarioService.update(usuario), HttpStatus.OK);
 	}
 
-	@DeleteMapping
-	public ResponseEntity<Void> delete(@RequestBody UsuarioDTO cliente) throws Exception {
-		usuarioService.delete(cliente.getId());
-		return ResponseEntity.status(HttpStatus.OK).build();
-	}
+	/*
+	 * @DeleteMapping
+	 * public ResponseEntity<Void> delete(@RequestBody UsuarioDTO usuario) throws
+	 * Exception {
+	 * usuarioService.delete(usuario.getId());
+	 * return ResponseEntity.status(HttpStatus.OK).build();
+	 * }
+	 */
 }

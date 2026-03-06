@@ -7,10 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
-import com.example.prueba.domain.entity.Usuario;
+import com.example.prueba.infrastructure.repository.entity.UsuarioEntity;
 
 @Repository
-public interface UsuarioJpaRepository extends JpaRepository<Usuario, UUID>, JpaSpecificationExecutor<Usuario> {
+public interface UsuarioJpaRepository
+		extends JpaRepository<UsuarioEntity, UUID>, JpaSpecificationExecutor<UsuarioEntity> {
 
-	Optional<Usuario> findByTipoIdentificacionAndIdentificacion(String Tipoidentificacion, String identificacion);
+	Optional<UsuarioEntity> findByTipoIdentificacionAndIdentificacion(String Tipoidentificacion, String identificacion);
 }

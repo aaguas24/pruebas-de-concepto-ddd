@@ -1,18 +1,24 @@
 package com.example.prueba.application.mapper;
 
-import java.util.List;
-
-import org.mapstruct.Mapper;
-
 import com.example.prueba.application.dto.UsuarioDTO;
 import com.example.prueba.domain.entity.Usuario;
+import org.mapstruct.*;
 
-@Mapper(componentModel = "spring")
+import java.util.List;
+
+@Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = MappingConstants.ComponentModel.SPRING)
 public interface UsuarioMapper {
+    Usuario toEntity(UsuarioDTO usuarioDTO);
 
-	UsuarioDTO toUsuarioDTO(Usuario cliente);
+    @AfterMapping
+    default void linkFacturas(@MappingTarget Usuario usuario) {
+        usuario.getFacturas().forEach(factura -> factura.setUsuario(usuario));
+    }
 
-	Usuario toUsuario(UsuarioDTO cliente);
+    UsuarioDTO toDto(Usuario usuario);
 
-	List<UsuarioDTO> toListUsuarioDTO(List<Usuario> cliente);
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Usuario partialUpdate(UsuarioDTO usuarioDTO, @MappingTarget Usuario usuario);
+
+    List<UsuarioDTO> toDto(List<Usuario> usuarios);
 }

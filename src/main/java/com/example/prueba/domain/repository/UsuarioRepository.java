@@ -7,15 +7,15 @@ import java.util.UUID;
 import com.example.prueba.domain.entity.Usuario;
 
 public interface UsuarioRepository {
-	Optional<Usuario> save(Usuario cliente) throws Exception;
+	Optional<Usuario> save(Usuario usuario);
 
-	List<Usuario> findAll() throws Exception;
+	List<Usuario> findAll();
 
-	Optional<Usuario> findByIdentificacion(String tipoIdentificacion, String identificacion) throws Exception;
+	Optional<Usuario> findByIdentificacion(String tipoIdentificacion, String identificacion);
 
-	Optional<Usuario> update(Usuario cliente) throws Exception;
+	Optional<Usuario> update(Usuario usuario);
 
-	void delete(UUID id) throws Exception;
+	void delete(UUID id);
 
-	Optional<Usuario> findById(UUID id) throws Exception;
+	Optional<Usuario> findById(UUID id);
 }

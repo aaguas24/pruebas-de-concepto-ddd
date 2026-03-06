@@ -1,5 +1,6 @@
 package com.example.prueba.infrastructure.repository.adapter;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import com.example.prueba.shared.exceptions.ServiceException;
@@ -24,36 +25,27 @@ public class FacturaJpaRepositoryAdapter implements FacturaRepository {
     private final FacturaEntityMapper facturaEntityMapper;
 
     @Override
-    public Factura save(Factura factura) throws Exception {
+    public Factura save(Factura factura) {
         try {
             FacturaEntity entity = facturaEntityMapper.toEntity(factura);
             FacturaEntity saved = facturaJpaRepository.save(entity);
             return facturaEntityMapper.toDomain(saved);
         } catch (Exception e) {
-            logger.error(" Error FacturaJpaRepositoryAdapter - save {}", e.getMessage());
-            throw new Exception(e.getMessage());
+            logger.error("Error en FacturaJpaRepositoryAdapter - save: {}", e.getMessage());
+            throw new ServiceException("Error al guardar la factura");
         }
-
     }
 
     @Override
-    public Factura findById(UUID id) throws Exception {
+    public Factura findById(UUID id) {
         try {
-            logger.info(" FacturaJpaRepositoryAdapter - findById {}", id);
-            var entity = facturaJpaRepository.findById(id);
-
-            return entity
-                    .map(facturaEntityMapper::toDomain) // Transforma si hay valor
-                    .orElseGet(() -> {
-                        logger.warn("No se encontró la factura");
-                        return new Factura(); // O una instancia vacía
-                    });
-
+            logger.info("FacturaJpaRepositoryAdapter - findById {}", id);
+            Optional<FacturaEntity> entity = facturaJpaRepository.findById(id);
+            return entity.map(facturaEntityMapper::toDomain).orElse(null);
         } catch (Exception e) {
-            logger.error(" Error FacturaJpaRepositoryAdapter - save {}", e.getMessage());
-            throw new Exception(e.getMessage());
+            logger.error("Error en FacturaJpaRepositoryAdapter - findById: {}", e.getMessage());
+            throw new ServiceException("Error al buscar la factura por ID");
         }
-
     }
 
 }

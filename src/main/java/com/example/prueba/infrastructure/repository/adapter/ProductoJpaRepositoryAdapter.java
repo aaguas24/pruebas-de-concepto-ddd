@@ -24,27 +24,25 @@ public class ProductoJpaRepositoryAdapter implements ProductoRepository {
 	private final ProductoEntityMapper productoEntityMapper;
 
 	@Override
-	public Optional<Producto> save(Producto producto) throws Exception {
+	public Optional<Producto> save(Producto producto) {
 		try {
 			ProductoEntity entity = productoEntityMapper.toEntity(producto);
 			ProductoEntity saved = productoJpaRepository.save(entity);
 			return Optional.ofNullable(productoEntityMapper.toDomain(saved));
 		} catch (Exception e) {
-			logger.info("Error al save producto:  {}" + e.getMessage());
-			throw new ServiceException(e.getMessage());
+			logger.error("Error en ProductoJpaRepositoryAdapter - save: {}", e.getMessage());
+			throw new ServiceException("Error al guardar el producto");
 		}
-
 	}
 
 	@Override
-	public Optional<Producto> findById(UUID id) throws Exception {
+	public Optional<Producto> findById(UUID id) {
 		try {
-			return productoJpaRepository.findById(id).map(productoEntityMapper::toDomain);// O una instancia vacía);
+			return productoJpaRepository.findById(id).map(productoEntityMapper::toDomain);
 		} catch (Exception e) {
-			logger.info("Error al save producto:  {}" + e.getMessage());
-			throw new ServiceException(e.getMessage());
+			logger.error("Error en ProductoJpaRepositoryAdapter - findById: {}", e.getMessage());
+			throw new ServiceException("Error al buscar el producto por ID");
 		}
-
 	}
 
 }
